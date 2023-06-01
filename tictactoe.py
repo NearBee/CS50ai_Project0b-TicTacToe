@@ -13,23 +13,42 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    return [[EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY],
-            [EMPTY, EMPTY, EMPTY]]
+    return [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]]
 
 
 def player(board):
     """
     Returns player who has the next turn on a board.
     """
-    raise NotImplementedError
+
+    # Initialize the counts for each player, Allowing for the game to start with the X player going first
+    count_X = 0
+    count_O = 0
+
+    for rows in board:
+        for space in rows:
+            if space == X:
+                count_X += 1
+            elif space == O:
+                count_O += 1
+
+    # X will always go first, so if the counts are equal then theoretically it should be X's turn
+    if count_X == count_O:
+        return X
+    else:
+        return O
 
 
 def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+    
     raise NotImplementedError
+
+    for rows in board:
+        for spaces in rows:
+
 
 
 def result(board, action):
