@@ -43,17 +43,17 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
+    possible_moves = set()
 
-    raise NotImplementedError
+    # Iterate through the rows of the board (ex: if it's a standard ttt board it would have 3 rows)
+    for row in range(len(board)):
+        # Iterate through the spaces of any given row (ex: if it's a standard ttt board each row would have 3 spaces)
+        for space in range(len(board[row])):
+            # If the given space is EMPTY add the (row, space) {ex: (row)1, (space)2 == EMPTY} to the possible moves set
+            if board[row][space] == EMPTY:
+                possible_moves.add((row, space))
 
-    for rows in board:
-        for space in rows:
-            if not space == EMPTY:
-                pass
-            else:
-                # possible moves would have to include (row, space) then what the actual move would be I imagine
-                possible_moves = (row, space)
-                return
+    return possible_moves
 
 
 def result(board, action):
