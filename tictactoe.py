@@ -43,12 +43,17 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    
+
     raise NotImplementedError
 
     for rows in board:
-        for spaces in rows:
-
+        for space in rows:
+            if not space == EMPTY:
+                pass
+            else:
+                # possible moves would have to include (row, space) then what the actual move would be I imagine
+                possible_moves = (row, space)
+                return
 
 
 def result(board, action):
