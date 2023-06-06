@@ -60,7 +60,13 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    raise NotImplementedError
+
+    for row in range(len(board)):
+        for space in range(len(board[row])):
+            if board[row][space] == EMPTY:
+                board[row][space] = action
+
+    return board
 
 
 def winner(board):
