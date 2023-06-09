@@ -60,13 +60,21 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
+    while True:
+        for row in range(len(board)):
+            for space in range(len(board[row])):
+                try:
+                    if board[row][space] == EMPTY:
+                        board[row][space] = action
+                        break
+                    else:
+                        raise ValueError
+                except ValueError:
+                    print(
+                        f"Space: row {row} / position {space} is currently occupied, please choose another spot"
+                    )
 
-    for row in range(len(board)):
-        for space in range(len(board[row])):
-            if board[row][space] == EMPTY:
-                board[row][space] = action
-
-    return board
+        return board
 
 
 def winner(board):
@@ -80,7 +88,10 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    raise NotImplementedError
+    if EMPTY in board:
+        return False
+    else:
+        return True
 
 
 def utility(board):
