@@ -49,7 +49,7 @@ def actions(board):
     for row in range(len(board)):
         # Iterate through the spaces of any given row (ex: if it's a standard ttt board each row would have 3 spaces)
         for space in range(len(board[row])):
-            # If the given space is EMPTY add the (row, space) {ex: (row)1, (space)2 == EMPTY} to the possible moves set
+            # If the given space is EMPTY add the (row, space) to possible_moves set {ex: (row)1, (space)2 == EMPTY} to the possible moves set
             if board[row][space] == EMPTY:
                 possible_moves.add((row, space))
 
@@ -81,7 +81,33 @@ def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    raise NotImplementedError
+    for row in board:
+        # Return a result for vertical wins
+        if row[0] == X and row[1] == X and row[2] == X:
+            return X
+        if row[0] == O and row[1] == O and row[2] == O:
+            return O
+
+    # Return a result for horizontal wins
+    for i in range(3):
+        if board[0][i] == X and board[1][i] == X and board[2][i] == X:
+            return X
+        if board[0][i] == O and board[1][i] == O and board[2][i] == O:
+            return O
+
+    # Return a winner for diagonal wins
+    if board[0][0] == X and board[1][1] == X and board[2][2] == X:
+        return X
+    if board[0][0] == O and board[1][1] == O and board[2][2] == O:
+        return O
+    if board[0][2] == X and board[1][1] == X and board[2][0] == X:
+        return X
+    if board[0][2] == O and board[1][1] == O and board[2][0] == O:
+        return O
+
+    # Return None if there is a Tie
+    else:
+        return None
 
 
 def terminal(board):
