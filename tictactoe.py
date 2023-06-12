@@ -114,10 +114,10 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if EMPTY in board:
-        return False
-    else:
+    if winner(board) != None or not any(EMPTY in spaces for spaces in board):
         return True
+    else:
+        return False
 
 
 def utility(board):
