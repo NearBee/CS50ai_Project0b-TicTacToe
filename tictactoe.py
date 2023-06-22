@@ -22,15 +22,8 @@ def player(board):
     """
 
     # Initialize the counts for each player, Allowing for the game to start with the X player going first
-    count_X = 0
-    count_O = 0
-
-    for rows in board:
-        for space in rows:
-            if space == X:
-                count_X += 1
-            elif space == O:
-                count_O += 1
+    count_X = sum(row.count(X) for row in board)
+    count_O = sum(row.count(O) for row in board)
 
     # X will always go first, so if the counts are equal then theoretically it should be X's turn
     if count_X == count_O:
@@ -45,13 +38,10 @@ def actions(board):
     """
     possible_moves = set()
 
-    # Iterate through the rows of the board (ex: if it's a standard ttt board it would have 3 rows)
-    for row in range(len(board)):
-        # Iterate through the spaces of any given row (ex: if it's a standard ttt board each row would have 3 spaces)
-        for space in range(len(board[row])):
-            # If the given space is EMPTY add the (row, space) to possible_moves set {ex: (row)1, (space)2 == EMPTY} to the possible moves set
-            if board[row][space] == EMPTY:
-                possible_moves.add((row, space))
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] == EMPTY:
+                possible_moves.add((i, j))
 
     return possible_moves
 
@@ -60,50 +50,36 @@ def result(board, action):
     """
     Returns the board that results from making move (i, j) on the board.
     """
-    while True:
-        for row in range(len(board)):
-            for space in range(len(board[row])):
-                try:
-                    if board[row][space] == EMPTY:
-                        board[row][space] = action
-                        break
-                    else:
-                        raise ValueError
-                except ValueError:
-                    print(
-                        f"Space: row {row} / position {space} is currently occupied, please choose another spot"
-                    )
+    if action not in actions(board):
+        raise ValueError("Invalid Action")
 
-        return board
+    player_turn = player(board)
+    new_board = [row[:] for row in board]
+    new_board[action[0]][action[1]] = player_turn
+    return new_board
 
 
 def winner(board):
     """
     Returns the winner of the game, if there is one.
     """
-    for row in board:
-        # Return a result for vertical wins
-        if row[0] == X and row[1] == X and row[2] == X:
-            return X
-        if row[0] == O and row[1] == O and row[2] == O:
-            return O
-
     # Return a result for horizontal wins
-    for i in range(3):
-        if board[0][i] == X and board[1][i] == X and board[2][i] == X:
+    for row in board:
+        if row[0] == row[1] == row[2] and row[0] is not None:
+            return row[0]
+
+    # Return a result for vertical wins
+    for col in range(3):
+        if board[0][col] == X and board[1][col] == X and board[2][col] == X:
             return X
-        if board[0][i] == O and board[1][i] == O and board[2][i] == O:
+        if board[0][col] == O and board[1][col] == O and board[2][col] == O:
             return O
 
     # Return a winner for diagonal wins
-    if board[0][0] == X and board[1][1] == X and board[2][2] == X:
-        return X
-    if board[0][0] == O and board[1][1] == O and board[2][2] == O:
-        return O
-    if board[0][2] == X and board[1][1] == X and board[2][0] == X:
-        return X
-    if board[0][2] == O and board[1][1] == O and board[2][0] == O:
-        return O
+    if board[0][0] == board[1][1] == board[2][2] and board[0][0] is not None:
+        return board[0][0]
+    if board[0][2] == board[1][1] == board[2][0] and board[0][2] is not None:
+        return board[0][2]
 
     # Return None if there is a Tie
     else:
@@ -114,7 +90,9 @@ def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    if winner(board) != None or not any(EMPTY in spaces for spaces in board):
+    if winner(board) is not None or all(
+        all(space is not None for space in row) for row in board
+    ):
         return True
     else:
         return False
@@ -124,9 +102,10 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    if winner(board) == X:
+    result = winner(board)
+    if result == X:
         return 1
-    elif winner(board) == O:
+    elif result == O:
         return -1
     else:
         return 0
@@ -163,7 +142,7 @@ def minimax(board):
             new_board = result(board, action)
             value = max_value_helper(new_board)
 
-            if value > min_value:
+            if value < min_value:
                 min_value = value
                 optimal_action = action
 
